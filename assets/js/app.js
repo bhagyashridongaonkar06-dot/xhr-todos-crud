@@ -47,7 +47,7 @@ fetchData()
 function createCard(arr){
     let res = '';
 
-    arr.forEach(ele => {
+    arr.forEach(ele =>{
         res += `<div class="col-md-6 mb-4" id=${ele.id}>
                 <div class="card">
                     <div class="card-body">
