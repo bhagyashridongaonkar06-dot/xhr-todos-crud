@@ -10,6 +10,8 @@ const userId = document.getElementById('userId')
 const todoContainer = document.getElementById('todoContainer')
 const addTodo = document.getElementById('addTodo')
 const updateTodo = document.getElementById('updateTodo')
+const spinner = document.getElementById('spinner')
+
 
 
 let todoArr = [];
@@ -23,6 +25,7 @@ function snackbar(msg,icon){
 }
 
 function fetchData(){
+    spinner.classList.remove('d-none')
     let todo_url = `${base_url}/todos`
  
     let xhr = new XMLHttpRequest();
@@ -38,6 +41,15 @@ function fetchData(){
             todoArr = JSON.parse(xhr.response)
             // cl(data);
             createCard(todoArr)
+             $(function () {
+             $('[data-toggle="tooltip"]').tooltip()
+        })
+             spinner.classList.add('d-none')
+
+        }else{
+             spinner.classList.add('d-none')
+            snackbar('api failed', 'error')
+
         }
     }
 }
@@ -49,10 +61,10 @@ function createCard(arr){
 
     arr.forEach(ele =>{
         res += `<div class="col-md-6 mb-4" id=${ele.id}>
-                <div class="card">
+                <div class="card todocard">
                     <div class="card-body">
                         <h4>
-                            title : <span class="title">${ele.title}</span>
+                            title : <span class="title" data-toggle="tooltip" data-placement="top" title="${ele.title}">${ele.title}</span>
                         </h4>
                         <h5>
                             <strong>status:</strong>
@@ -74,6 +86,7 @@ function createCard(arr){
 }
 
 function onSubmit(ele){
+     spinner.classList.remove('d-none')
     ele.preventDefault();
 
     let newObj={
@@ -112,14 +125,17 @@ function onSubmit(ele){
                         </div>
                     </div>
                 </div>`
-                todoContainer.prepend(col);
+            todoContainer.prepend(col);
+             spinner.classList.add('d-none')
         }else{
+             spinner.classList.add('d-none')
         snackbar('failed to submit data', 'error')
         }
     }
 }
 
 function onedit(ele){
+     spinner.classList.remove('d-none')
     let editId = ele.closest('.col-md-6').id;
     localStorage.setItem('editId', editId)
 
@@ -141,18 +157,31 @@ function onedit(ele){
              let editObj = JSON.parse(xhr.response);
            cl(editObj);
             title.value = editObj.title;
-            completed.value = editObj.completed;
+             if(editObj.completed){ 
+                  completed.value= "Yes"
+             }else{ 
+                  completed.value= "No"
+                 
+             }
+            cl(editObj.completed)
             userId.value = editObj.userId;
             addTodo.classList.add('d-none');
             updateTodo.classList.remove('d-none');
+             spinner.classList.add('d-none')
+             todoform.scrollIntoView({
+                behavior :'smooth',
+                block :'start'
+             })
         }else{
+             spinner.classList.add('d-none')
             snackbar('something went wrong', 'error')
         }
 
     }
 }
 
-function onupdateTodo(eve){
+function onupdateTodo(){
+     spinner.classList.remove('d-none')
     let updateId = localStorage.getItem('editId')
     let update_url = `${base_url}/todos/${updateId}`
 
@@ -194,9 +223,19 @@ function onupdateTodo(eve){
                 todoform.reset();
                 document.querySelectorAll('.btn-outline-danger').forEach(element => {
                 element.disabled = false;
+                spinner.classList.add('d-none')
+                snackbar('todo updated successfully!!', 'success')
     });
-
+        const card = div.closest('.card')
+        div.scrollIntoView({behavior:'smooth', block:'center'});
+        div.style.border = '2px solid green';
+        card.classList.add('highlight');
+        setTimeout((ele) => {
+            ele.classList.remove('highlight')
+            
+        },4000);
         }else{
+             spinner.classList.add('d-none')
             snackbar('failed to edit data', 'error')
         }
 
@@ -205,6 +244,7 @@ function onupdateTodo(eve){
 }
 
 function ondelete(ele){
+     spinner.classList.remove('d-none')
     let removeId = ele.closest('.col-md-6').id;
 
     let remove_url = `${base_url}/todos/${removeId}`;
@@ -216,13 +256,29 @@ function ondelete(ele){
 
     xhr.onload = function(){
         if(xhr.status >= 200 && xhr.status <= 299){
+            Swal.fire({
+            title: "Are you sure?",
+            text: "Data cannot be restored or retrived!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+        if (result.isConfirmed) Swal.fire({
+            title: "Deleted!",
+            text: "data deleted successfully.",
+            icon: "success"
+        });
+        });
             ele.closest('.col-md-6').remove()
+             spinner.classList.add('d-none')
         }else{
             snackbar('failed to delete data', 'error')
+             spinner.classList.add('d-none')
         }
     }
 }
-
 todoform.addEventListener('submit', onSubmit);
 updateTodo.addEventListener('click', onupdateTodo)
 
