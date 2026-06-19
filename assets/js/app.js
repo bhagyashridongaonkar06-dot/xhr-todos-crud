@@ -91,7 +91,7 @@ function onSubmit(ele){
 
     let newObj={
         title : title.value,
-        completed : completed.value,
+        completed : completed.value === "Yes",
         userId : userId.value
     }
     todoArr.push(newObj)
@@ -108,6 +108,7 @@ function onSubmit(ele){
             col.className = 'col-md-6';
             col.id = res.id;
             col.innerHTML = `
+                <div class="card">
                     <div class="card-body">
                         <h4>
                             title : <span class="title">${newObj.title}</span>
@@ -115,18 +116,19 @@ function onSubmit(ele){
                         <h5>
                             <strong>status:</strong>
                           
-                            <span class="badge ${newObj.completed ?"badge-success" :"badge-danger"}">
+                            <span class="badge ${newObj.completed ?"badge-success":"badge-danger"}">
                                    ${newObj.completed ?"completed" : "pending"}
                             </span> 
                         </h5>
-                        <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary" onclick="onedit(this)">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="ondelete(this)">Delete</button>
-                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary" onclick="onedit(this)">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="ondelete(this)">Delete</button>
                     </div>
                 </div>`
             todoContainer.prepend(col);
              spinner.classList.add('d-none')
+             todoform.reset();
         }else{
              spinner.classList.add('d-none')
         snackbar('failed to submit data', 'error')
