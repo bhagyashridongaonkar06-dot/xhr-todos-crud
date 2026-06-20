@@ -105,7 +105,7 @@ function onSubmit(ele){
         if(xhr.status >= 200 && xhr.status <= 299){
             let res = JSON.parse(xhr.response)
             let col = document.createElement('div');
-            col.className = 'col-md-6';
+            col.className = 'col-md-6 mb-4';
             col.id = res.id;
             col.innerHTML = `
                 <div class="card">
