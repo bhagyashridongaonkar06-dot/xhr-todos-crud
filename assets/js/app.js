@@ -73,10 +73,10 @@ function createCard(arr){
                                    ${ele.completed ?"completed" : "pending"}
                             </span> 
                         </h5>
-                        <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary" onclick="onedit(this)">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="ondelete(this)">Delete</button>
-                        </div>
+                    </div>
+                     <div class="card-footer d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary" onclick="onedit(this)">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="ondelete(this)">Delete</button>
                     </div>
                 </div>
             </div>`
@@ -189,7 +189,7 @@ function onupdateTodo(){
 
     let updatedObj={
         title : title.value,
-        completed : completed.value,
+        completed : completed.value === 'Yes',
         userId : userId.value,
         id : updateId
     }
